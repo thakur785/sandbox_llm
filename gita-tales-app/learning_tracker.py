@@ -181,18 +181,117 @@ def main():
     print("Welcome to your LLM Learning Journey! 🚀")
     tracker.display_overall_progress()
     
-    # Example: Log some progress for Week 1
+    # Get current week
     current_week = tracker.get_current_week()
     print(f"\nYou are currently in Week {current_week}")
     
-    # Uncomment and modify these lines to log your actual progress:
-    # tracker.log_progress(
-    #     week=1, 
-    #     learning_hours=3.0, 
-    #     building_hours=5.0, 
-    #     notes="Set up environment, created basic story generator",
-    #     tasks_completed=["Set up development environment", "Create basic story generator"]
-    # )
+    # Log today's progress (August 24, 2025)
+    if current_week == 1:
+        print("\n🎉 Logging your progress for today...")
+        tracker.log_progress(
+            week=1, 
+            learning_hours=2.5, 
+            building_hours=4.0, 
+            notes="Set up secure development environment, learned API security best practices, created story generator with error handling, implemented mock testing",
+            tasks_completed=[
+                "Set up development environment", 
+                "Create basic story generator",
+                "Set up secure API key management (.env)",
+                "Create comprehensive project structure",
+                "Implement error handling and testing"
+            ]
+        )
+        
+        print("\n💡 What you've learned today:")
+        print("  📚 Environment variables and security")
+        print("  📚 Python classes and error handling") 
+        print("  📚 OpenAI API integration")
+        print("  📚 Git branching and professional workflow")
+        print("  📚 JSON data structures and file I/O")
+        
+        print("\n🎯 Next session goals:")
+        print("  🔨 Add billing to OpenAI account")
+        print("  🔨 Test real story generation")
+        print("  🔨 Start Streamlit web interface")
+        print("  🔨 Implement age-specific story variations")
+    else:
+        print(f"\n📝 Ready to log progress for Week {current_week}")
+        print("Uncomment the log_progress lines below and update with your actual hours and tasks")
+
+def quick_progress_check():
+    """Quick function to check today's progress without logging"""
+    tracker = LearningTracker()
+    current_week = tracker.get_current_week()
+    
+    print(f"📅 Current Week: {current_week}")
+    print(f"📊 Target for Week {current_week}: 6.4 learning + 9.6 building = 16 hours")
+    
+    if tracker.weekly_goals.get(f"week_{current_week}"):
+        week_data = tracker.weekly_goals[f"week_{current_week}"]
+        
+        actual_learning = week_data.get('actual_learning_hours', 0)
+        actual_building = week_data.get('actual_building_hours', 0)
+        target_learning = week_data['learning_hours'] 
+        target_building = week_data['building_hours']
+        
+        print(f"📚 Learning Progress: {actual_learning}/{target_learning} hours ({(actual_learning/target_learning)*100:.1f}%)")
+        print(f"🔨 Building Progress: {actual_building}/{target_building} hours ({(actual_building/target_building)*100:.1f}%)")
+        
+        remaining_learning = max(0, target_learning - actual_learning)
+        remaining_building = max(0, target_building - actual_building)
+        
+        if remaining_learning > 0 or remaining_building > 0:
+            print(f"\n⏰ Remaining this week:")
+            if remaining_learning > 0:
+                print(f"  📚 Learning: {remaining_learning:.1f} hours")
+            if remaining_building > 0:
+                print(f"  🔨 Building: {remaining_building:.1f} hours")
+        else:
+            print("🎉 Week 1 targets achieved!")
+
+def log_additional_hours(learning_hours=0, building_hours=0, notes=""):
+    """Quick function to add more hours to current week"""
+    tracker = LearningTracker()
+    current_week = tracker.get_current_week()
+    
+    week_key = f"week_{current_week}"
+    if week_key in tracker.weekly_goals:
+        current_learning = tracker.weekly_goals[week_key].get('actual_learning_hours', 0)
+        current_building = tracker.weekly_goals[week_key].get('actual_building_hours', 0)
+        
+        new_learning = current_learning + learning_hours
+        new_building = current_building + building_hours
+        
+        tracker.log_progress(
+            week=current_week,
+            learning_hours=new_learning,
+            building_hours=new_building,
+            notes=notes,
+            tasks_completed=tracker.weekly_goals[week_key].get('completed_tasks', [])
+        )
 
 if __name__ == "__main__":
-    main()
+    print("🚀 LLM Learning Journey Tracker")
+    print("Choose an option:")
+    print("1. Show full progress summary")
+    print("2. Quick progress check")
+    print("3. Log additional hours")
+    
+    try:
+        choice = input("\nEnter choice (1-3) or press Enter for option 1: ").strip()
+        
+        if choice == "2":
+            quick_progress_check()
+        elif choice == "3":
+            print("\nLogging additional hours...")
+            learning = float(input("Additional learning hours: ") or "0")
+            building = float(input("Additional building hours: ") or "0") 
+            notes = input("Notes (optional): ").strip()
+            log_additional_hours(learning, building, notes)
+        else:
+            main()  # Default option
+            
+    except KeyboardInterrupt:
+        print("\n👋 See you next time!")
+    except ValueError:
+        print("❌ Please enter valid numbers for hours")
